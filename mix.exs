@@ -1,18 +1,18 @@
 defmodule RaSStaggregator.Mixfile do
   use Mix.Project
 
-  @description """
-    An Elixir feed aggregator.
-  """
+  defp description do
+    "Feed aggregator for Elixir."
+  end
 
   def project do
     [app: :rasstaggregator,
-     version: "0.1.0",
+     version: "1.0.0-alpha1",
      elixir: "~> 1.4",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
      source_url: "https://github.com/slashrsm/rasstaggregator",
-     description: "Feed aggregator for Elixir.",
+     description: description(),
      package: package(),
      deps: deps()]
   end
@@ -29,7 +29,8 @@ defmodule RaSStaggregator.Mixfile do
       {:feeder_ex, "~> 1.0"}, 
       {:httpoison, "~> 0.11.0"}, 
       #{:timex, "~> 3.0"},
-      {:dialyze, only: [:dev, :test]}
+      {:dialyze, only: [:dev, :test]},
+      {:ex_doc, ">= 0.0.0", only: :dev}
     ]
   end
 
