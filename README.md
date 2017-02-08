@@ -1,4 +1,4 @@
-![](https://i.imgur.com/KqxckgE.png)
+![](https://i.imgur.com/7IUuHes.png)
 # RaSStaggregator
 
 Feed aggregator for Elixir.
