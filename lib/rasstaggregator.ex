@@ -18,8 +18,8 @@ defmodule RaSStaggregator do
   RaSStaggregator will start a parser for each feed and periodically check them
   and store them into ETS. It is easy to get the list of feed entries from it:
 
-     feed = RaSStaggregator.Feed.new "http://example.com/feed"
-     entries = RaSStaggregator.Cache.find(feed)
+      feed = RaSStaggregator.Feed.new "http://example.com/feed"
+      entries = RaSStaggregator.Cache.find(feed)
   """
 
   use Application
