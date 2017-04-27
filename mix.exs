@@ -7,7 +7,7 @@ defmodule RaSStaggregator.Mixfile do
 
   def project do
     [app: :rasstaggregator,
-     version: "1.0.0-alpha1",
+     version: "1.0.0-beta1",
      elixir: "~> 1.4",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
@@ -28,7 +28,7 @@ defmodule RaSStaggregator.Mixfile do
     [
       {:feeder_ex, "~> 1.0"}, 
       {:httpoison, "~> 0.11.0"}, 
-      #{:timex, "~> 3.0"},
+      {:calendar, "~> 0.17"},
       {:dialyze, only: [:dev, :test]},
       {:ex_doc, ">= 0.0.0", only: :dev}
     ]

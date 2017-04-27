@@ -2,56 +2,18 @@ defmodule RaSStaggregator.Feed do
   @moduledoc """
   Represents a feed and works with it.
   """
-  #import DateTime, only: [from_iso8601: 1, to_unix: 1, to_unix: 2]
   require Logger
+  use GenServer
 
   defstruct id: nil,
-            name: nil,
-            url: nil
+    url: nil,
+    timeout: 900
 
   @type t :: %RaSStaggregator.Feed{
     id: atom,
-    name: String.t | nil,
     url: String.t,
+    timeout: integer,
   }
-
-  @doc """
-  Gets a feed struct.
-
-  ## Parameters
-
-  - `feed` - A feed struct.
-
-  ## Example
-
-      iex> RaSStaggregator.Feed.new "http://example.com/feed"
-      %RaSStaggregator.Feed{id: :f12192, name: nil, url: "http://example.com/feed"}
-
-      iex> RaSStaggregator.Feed.new "http://example.com/feed", "My nice feed"
-      %RaSStaggregator.Feed{id: :f12192, name: "My nice feed", url: "http://example.com/feed"}
-  """
-  @spec new(String.t, String.t | nil) :: RaSStaggregator.Feed.t
-  def new url, name \\ nil do
-    id = :crypto.hash(:md5 , url)
-    |> Base.encode16(case: :lower)
-    |> String.slice(0..4)
-
-    # TODO f
-    %RaSStaggregator.Feed{id: String.to_atom("f" <> id), url: url, name: name}
-  end
-
-  @doc """
-  Starts a new parser process for a given feed.
-
-  ## Parameters
-
-  - `feed` - A feed struct.
-  """
-  @spec start_link(RaSStaggregator.Feed.t) :: {:ok, pid}
-  def start_link feed do
-    pid = spawn(RaSStaggregator.Feed, :parse, [feed])
-    {:ok, pid}
-  end
 
   @doc """
   Periodically parses a feed in an infinite loop.
@@ -67,10 +29,9 @@ defmodule RaSStaggregator.Feed do
         try do
           {:ok, parsed_feed, _} = FeederEx.parse(body)
           entries = parsed_feed.entries
-          # TODO Use timex library to parse dates and sort
-          #|> Enum.sort(&compare_datetimes/2)
+            |> Enum.sort(&compare_datetimes/2)
 
-          RaSStaggregator.Cache.save(feed, entries)
+          RaSStaggregator.Cache.save(feed.id, entries)
         catch
           _exception -> 
             Logger.error("Unable to parse feed #{feed.url}")
@@ -78,15 +39,68 @@ defmodule RaSStaggregator.Feed do
       {:error, %HTTPoison.Error{reason: reason}} ->
         Logger.error("Unable to get feed #{feed.url}: " <> Atom.to_string(reason))
     end
-
-    Process.sleep(300_000)
-    parse feed
   end
 
-  #def compare_datetimes first, second do
-  #  {:ok, first_parsed, _offset} = from_iso8601(first)
-  #  {:ok, second_parsed, _offset} = from_iso8601(second)
+  @doc """
+  Compares two feed entries and determines which one was published in an earlier
+  point in time.
 
-  #  to_unix(first_parsed) <= to_unix(second_parsed)
-  #end
+  Returns `false` if the first feed was published in an earlier point in time and
+  `true` otherwise.
+
+  ## Parameters
+
+  - `first` - A first feed entry.
+  - `second` - A second feed entry.
+
+  ## Examples
+
+  iex> first = %FeederEx.Entry{updated: "Thu, 27 Apr 2017 10:00:00 +0200"}
+  iex> second = %FeederEx.Entry{updated: "Thu, 27 Apr 2017 11:00:00 +0200"}
+  iex> RaSStaggregator.Feed.compare_datetimes first, second
+  false
+  iex> RaSStaggregator.Feed.compare_datetimes second, first
+  true
+  iex> RaSStaggregator.Feed.compare_datetimes first, first
+  true
+
+  """
+  @spec compare_datetimes(FeederEx.Entry, FeederEx.Entry) :: true | false
+  def compare_datetimes first, second do
+    {:ok, first_parsed} = Calendar.DateTime.Parse.rfc822_utc first.updated
+    {:ok, second_parsed} = Calendar.DateTime.Parse.rfc822_utc second.updated
+
+    # TODO try to parse more different formates if RFC822 failed. Yes, it is
+    # defined by the RSS standard, but feeds come with all sorts of different
+    # things.
+
+    case DateTime.compare(first_parsed, second_parsed) do
+      :lt -> false
+      _ -> true
+    end
+  end
+
+  ###
+  # GenServer API
+  ###
+  def start_link feed do
+    GenServer.start_link(__MODULE__, feed)
+  end
+
+  def init(feed) do
+    schedule_parse(1)
+    {:ok, feed}
+  end
+
+  def handle_info(:parse, feed) do
+    parse(feed)
+    schedule_parse(feed.timeout)
+    {:noreply, feed}
+  end
+
+  @spec schedule_parse(non_neg_integer) :: any
+  defp schedule_parse timeout do
+    Process.send_after(self(), :parse, timeout * 1000)
+  end
+
 end

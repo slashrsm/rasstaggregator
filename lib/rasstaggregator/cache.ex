@@ -11,17 +11,16 @@ defmodule RaSStaggregator.Cache do
 
   ## Examples
 
-      iex> feed = RaSStaggregator.Feed.new "http://example.com/feed"
-      %RaSStaggregator.Feed{id: :f12192, name: nil, url: "http://example.com/feed"}
+      iex> feed = %RaSStaggregator.Feed{id: :example_feed_1, url: "http://example.com/some_feed"}
       iex> entries = []
       []
-      iex> RaSStaggregator.Cache.save feed, entries
+      iex> RaSStaggregator.Cache.save feed.id, entries
       true
 
   """
-  @spec save(RaSStaggregator.Feed.t, list(any)) :: true
-  def save(feed, entries) do
-    :ets.insert(__MODULE__, {feed.id, entries})
+  @spec save(atom, list(any)) :: true
+  def save(feed_id, entries) do
+    :ets.insert(__MODULE__, {feed_id, entries})
   end
 
 
@@ -34,19 +33,20 @@ defmodule RaSStaggregator.Cache do
 
   ## Examples
 
-      iex> feed = RaSStaggregator.Feed.new "http://example.com/some_feed"
-      %RaSStaggregator.Feed{id: :fc6698, name: nil, url: "http://example.com/some_feed"}
-      iex> RaSStaggregator.Cache.find feed
+      iex> feed = %RaSStaggregator.Feed{id: :example_feed_2, url: "http://example.com/some_feed"}
+      iex> RaSStaggregator.Cache.find feed.id
       nil
-      iex> RaSStaggregator.Cache.save feed, []
+      iex> RaSStaggregator.Cache.save feed.id, []
       true
-      iex> RaSStaggregator.Cache.find feed
+      iex> RaSStaggregator.Cache.find feed.id
       []
+      iex> RaSStaggregator.Cache.find :non_existing
+      nil
 
   """
-  @spec find(RaSStaggregator.Feed.t) :: list(any) | nil
-  def find(feed) do
-    case :ets.lookup(__MODULE__, feed.id) do
+  @spec find(atom) :: list(any) | nil
+  def find(feed_id) do
+    case :ets.lookup(__MODULE__, feed_id) do
       [{_id, value}] -> value
       [] -> nil
     end
@@ -57,15 +57,14 @@ defmodule RaSStaggregator.Cache do
 
   ## Examples
 
-      iex> feed = RaSStaggregator.Feed.new "http://example.com/some_feed"
-      %RaSStaggregator.Feed{id: :fc6698, name: nil, url: "http://example.com/some_feed"}
-      iex> RaSStaggregator.Cache.save feed, []
+      iex> feed = %RaSStaggregator.Feed{id: :example_feed_3, url: "http://example.com/some_feed"}
+      iex> RaSStaggregator.Cache.save feed.id, []
       true
-      iex> RaSStaggregator.Cache.find feed
+      iex> RaSStaggregator.Cache.find feed.id
       []
       iex> RaSStaggregator.Cache.clear
       true
-      iex> RaSStaggregator.Cache.find feed
+      iex> RaSStaggregator.Cache.find feed.id
       nil
 
   """
@@ -77,7 +76,6 @@ defmodule RaSStaggregator.Cache do
   ###
   # GenServer API
   ###
-
   def start_link do
     GenServer.start_link(__MODULE__, [], name: __MODULE__)
   end
