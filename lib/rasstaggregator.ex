@@ -19,6 +19,11 @@ defmodule RaSStaggregator do
 
       feed = %RaSStaggregator.Feed{:id :example_feed, url: "http://example.com/feed"}
       entries = RaSStaggregator.Cache.find(feed.id)
+
+  or to get the post timeline consisting out of multiple feeds:
+
+      timeline = RaSStaggregator.get_timeline([:feed_id_1, :feed_id_2, ...])
+
   """
 
   use Application
@@ -70,23 +75,23 @@ defmodule RaSStaggregator do
 
   ## Examples
 
-  iex> RaSStaggregator.Cache.save(:first, [%FeederEx.Entry{title: "Example post 1", updated: "Thu, 27 Apr 2017 10:00:00 +0200"}])
-  iex> RaSStaggregator.Cache.save(:second, [%FeederEx.Entry{title: "Example post 2", updated: "Thu, 27 Apr 2017 12:00:00 +0200"}])
-  iex> RaSStaggregator.get_timeline [:first, :second]
-  [%FeederEx.Entry{author: nil, duration: nil, enclosure: nil, id: nil,
-    image: nil, link: nil, subtitle: nil, summary: nil, title: "Example post 2",
-    updated: "Thu, 27 Apr 2017 12:00:00 +0200"},
-   %FeederEx.Entry{author: nil, duration: nil, enclosure: nil, id: nil,
-    image: nil, link: nil, subtitle: nil, summary: nil, title: "Example post 1",
-    updated: "Thu, 27 Apr 2017 10:00:00 +0200"}]
-  iex> RaSStaggregator.get_timeline [:second]
-  [%FeederEx.Entry{author: nil, duration: nil, enclosure: nil, id: nil,
-    image: nil, link: nil, subtitle: nil, summary: nil, title: "Example post 2",
-    updated: "Thu, 27 Apr 2017 12:00:00 +0200"}]
-  iex> RaSStaggregator.get_timeline [:first]
-  [%FeederEx.Entry{author: nil, duration: nil, enclosure: nil, id: nil,
-    image: nil, link: nil, subtitle: nil, summary: nil, title: "Example post 1",
-    updated: "Thu, 27 Apr 2017 10:00:00 +0200"}]
+      iex> RaSStaggregator.Cache.save(:first, [%FeederEx.Entry{title: "Example post 1", updated: "Thu, 27 Apr 2017 10:00:00 +0200"}])
+      iex> RaSStaggregator.Cache.save(:second, [%FeederEx.Entry{title: "Example post 2", updated: "Thu, 27 Apr 2017 12:00:00 +0200"}])
+      iex> RaSStaggregator.get_timeline [:first, :second]
+      [%FeederEx.Entry{author: nil, duration: nil, enclosure: nil, id: nil,
+        image: nil, link: nil, subtitle: nil, summary: nil, title: "Example post 2",
+        updated: "Thu, 27 Apr 2017 12:00:00 +0200"},
+       %FeederEx.Entry{author: nil, duration: nil, enclosure: nil, id: nil,
+        image: nil, link: nil, subtitle: nil, summary: nil, title: "Example post 1",
+        updated: "Thu, 27 Apr 2017 10:00:00 +0200"}]
+      iex> RaSStaggregator.get_timeline [:second]
+      [%FeederEx.Entry{author: nil, duration: nil, enclosure: nil, id: nil,
+        image: nil, link: nil, subtitle: nil, summary: nil, title: "Example post 2",
+        updated: "Thu, 27 Apr 2017 12:00:00 +0200"}]
+      iex> RaSStaggregator.get_timeline [:first]
+      [%FeederEx.Entry{author: nil, duration: nil, enclosure: nil, id: nil,
+        image: nil, link: nil, subtitle: nil, summary: nil, title: "Example post 1",
+        updated: "Thu, 27 Apr 2017 10:00:00 +0200"}]
 
   """
   @spec get_timeline([atom]) :: [%FeederEx.Entry{}]

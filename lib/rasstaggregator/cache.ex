@@ -1,4 +1,8 @@
 defmodule RaSStaggregator.Cache do
+  @moduledoc """
+  Stores parsed feeds.
+  """
+
   use GenServer
 
   @doc """

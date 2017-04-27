@@ -55,14 +55,14 @@ defmodule RaSStaggregator.Feed do
 
   ## Examples
 
-  iex> first = %FeederEx.Entry{updated: "Thu, 27 Apr 2017 10:00:00 +0200"}
-  iex> second = %FeederEx.Entry{updated: "Thu, 27 Apr 2017 11:00:00 +0200"}
-  iex> RaSStaggregator.Feed.compare_datetimes first, second
-  false
-  iex> RaSStaggregator.Feed.compare_datetimes second, first
-  true
-  iex> RaSStaggregator.Feed.compare_datetimes first, first
-  true
+      iex> first = %FeederEx.Entry{updated: "Thu, 27 Apr 2017 10:00:00 +0200"}
+      iex> second = %FeederEx.Entry{updated: "Thu, 27 Apr 2017 11:00:00 +0200"}
+      iex> RaSStaggregator.Feed.compare_datetimes first, second
+      false
+      iex> RaSStaggregator.Feed.compare_datetimes second, first
+      true
+      iex> RaSStaggregator.Feed.compare_datetimes first, first
+      true
 
   """
   @spec compare_datetimes(FeederEx.Entry, FeederEx.Entry) :: true | false

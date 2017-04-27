@@ -7,7 +7,7 @@ defmodule RaSStaggregator.Mixfile do
 
   def project do
     [app: :rasstaggregator,
-     version: "1.0.0-beta1",
+     version: "1.0.0-beta2",
      elixir: "~> 1.4",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
