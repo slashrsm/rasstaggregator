@@ -30,7 +30,8 @@ defmodule RaSStaggregator.Mixfile do
       {:httpoison, "~> 0.11.0"}, 
       {:calendar, "~> 0.17"},
       {:dialyze, only: [:dev, :test]},
-      {:ex_doc, ">= 0.0.0", only: :dev}
+      {:ex_doc, ">= 0.0.0", only: :dev},
+      {:inch_ex, only: :docs},
     ]
   end
 
