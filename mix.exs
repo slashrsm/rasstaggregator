@@ -6,15 +6,24 @@ defmodule RaSStaggregator.Mixfile do
   end
 
   def project do
-    [app: :rasstaggregator,
-     version: "1.0.0-beta2",
-     elixir: "~> 1.4",
-     build_embedded: Mix.env == :prod,
-     start_permanent: Mix.env == :prod,
-     source_url: "https://github.com/slashrsm/rasstaggregator",
-     description: description(),
-     package: package(),
-     deps: deps()]
+    [
+      app: :rasstaggregator,
+      version: "1.0.0-beta2",
+      elixir: "~> 1.4",
+      build_embedded: Mix.env == :prod,
+      start_permanent: Mix.env == :prod,
+      source_url: "https://github.com/slashrsm/rasstaggregator",
+      description: description(),
+      package: package(),
+      deps: deps(),
+      test_coverage: [tool: ExCoveralls],
+      preferred_cli_env: [
+        "coveralls": :test,
+        "coveralls.detail": :test,
+        "coveralls.post": :test,
+        "coveralls.html": :test
+      ],
+    ]
   end
 
   def application do
@@ -32,6 +41,7 @@ defmodule RaSStaggregator.Mixfile do
       {:dialyze, only: [:dev, :test]},
       {:ex_doc, ">= 0.0.0", only: :dev},
       {:inch_ex, only: :docs},
+      {:excoveralls, "~> 0.6", only: :test},
     ]
   end
 

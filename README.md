@@ -8,6 +8,7 @@ Status](https://travis-ci.org/slashrsm/rasstaggregator.svg?branch=master)](https
 [![Deps Status](https://beta.hexfaktor.org/badge/all/github/slashrsm/rasstaggregator.svg)](https://beta.hexfaktor.org/github/slashrsm/rasstaggregator)
 [![Inline docs](http://inch-ci.org/github/slashrsm/rasstaggregator.svg)](http://hexdocs.pm/rasstaggregator/)
 [![Hex Version](http://img.shields.io/hexpm/v/rasstaggregator.svg?style=flat)](https://hex.pm/packages/rasstaggregator)
+[![Coverage Status](https://coveralls.io/repos/github/slashrsm/rasstaggregator/badge.svg?branch=master)](https://coveralls.io/github/slashrsm/rasstaggregator?branch=master)
 
 ## Installation
 

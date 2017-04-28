@@ -16,6 +16,7 @@ install:
 script:
   - mix test
   - mix dialyze
+  - MIX_ENV=test mix coveralls.travis
 
 after_script:
   - MIX_ENV=docs mix deps.get
